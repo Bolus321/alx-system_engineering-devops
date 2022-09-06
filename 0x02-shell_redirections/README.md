@@ -1,1 +1,1 @@
-ithis folder contains Sheel scripts for several functions:
+“ a script for the following commands head, tail, find, wc, sort, uniq, grep, tr”
