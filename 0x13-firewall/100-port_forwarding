@@ -7,6 +7,9 @@
 #   ufw-before-forward
 #
 
+# I tried this - bad value!
+# sudo iptables -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to 35.174.185.240:80
+
 *nat
 :PREROUTING ACCEPT [0:0]
 -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
