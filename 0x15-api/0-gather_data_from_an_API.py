@@ -1,8 +1,7 @@
-Request from API; Return TODO list progress given employee ID
-"""script using this REST API, for a given employee ID,
-returns information about his/her TODO list progress.
+#!/usr/bin/python3
 """
-
+Request from API; Return TODO list progress given employee ID
+"""
 import requests
 from sys import argv
 
@@ -33,3 +32,4 @@ def display():
 
 if __name__ == "__main__":
     display()
+
