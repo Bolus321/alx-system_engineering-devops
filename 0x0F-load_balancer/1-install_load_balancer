@@ -1,11 +1,35 @@
 #!/usr/bin/env bash
-# This script installs and configures HAproxy on your lb-01 server.
+# Create a script to install and configure HAProxy on lb-01 server
+# Configure HAProxy to send traffic to web-01 and web-02 servers
+# Distribute requests using a roundrobin algorithm
+# Make sure that HAProxy can be managed via an init script
 
-apt-get -y install software-properties-common
-add-apt-repository -y ppa:vbernat/haproxy-2.6
-apt-get -y update
+# Install and configure HAproxy on my lb-01 server.
+sudo apt-get -y update
 apt-get -y install haproxy
 
-sed -i -e '$aENABLED=1\n' /etc/default/haproxy
-sed -i -e '$a\listen balancer\n\tbind :80\n\tbalance roundrobin\n\tserver 147782-web-02 52.91.154.31:80 check\n\tserver 147782-lb-01 100.24.240.147:80 check\n' /etc/haproxy/haproxy.cfg
-service haproxy restart
+# edit config file
+server_config=\
+"
+frontend  bolus321_frontend
+        bind *:80
+        mode http
+        default_backend bolus321_backend
+backend bolus321_backend
+        balance roundrobin
+        server 176572-web-01 54.172.152.92:80 check
+        server 176572-web-02 52.201.172.152:80 check
+"
+echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
+
+# hostnames above?
+
+# enable haproxy to be started by init script
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+
+# Testing the HAproxy configuration file
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+
+# Restart the Nginx service
+sudo service haproxy restart
