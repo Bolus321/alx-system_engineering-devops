@@ -1,31 +1,29 @@
-# Automate the installation of nginx and configuration
+# Setup New Ubuntu server with nginx
+# and add a custom HTTP header
 
-exec { 'Update':
-  command  => 'apt update -y',
-  user     => 'root',
-  provider => 'shell'
+exec { 'update system':
+        command => '/usr/bin/apt-get update',
 }
 
--> exec { 'Upgrade':
-  command  => 'apt full-update -y',
-  user     => 'root',
-  provider => 'shell'
+package { 'nginx':
+	ensure => 'installed',
+	require => Exec['update system']
 }
 
--> package { 'nginx':
-  ensure   => present,
-  provider => 'apt'
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
 }
 
--> file_line { 'Adding the X-Served-By header':
-  ensure => present,
-  path   => '/etc/nginx/sites-available/default',
-  after  => 'listen 80 default_server;',
-  line   => 'add_header X-Served-By $(hostname)'
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https:\/\/youtube.com\/watch?v=7huu6W09OyU permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
 }
 
--> service { 'Run nginx':
-  ensure  => running,
-  enable  => true,
-  require => Package['nginx']
+exec {'HTTP header':
+	command => 'sed -i "25i\	add_header X-Served-By \$hostname;" /etc/nginx/sites-available/default',
+	provider => 'shell'
 }
+
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
