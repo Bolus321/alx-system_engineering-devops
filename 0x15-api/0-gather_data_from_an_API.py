@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 """
 A Script that, uses this REST API, for a given employee ID, returns
-info  about his/her TODO list progress
+info about his/her TODO list progress
 """
-
 
 import json
 import requests
@@ -30,10 +29,8 @@ if __name__ == "__main__":
         if done_tasks['completed']:
             totalTasks += 1
 
-
     print("Employee {} is done with tasks({}/{}):".
           format(name, totalTasks, len(json_req)))
-
 
     for done_tasks in json_req:
         if done_tasks['completed']:
